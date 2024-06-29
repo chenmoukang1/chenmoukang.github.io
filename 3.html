@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	<label for="weather">选择今天的天气：</label>
+	<select id="weather">
+	  <option value="">--作出选择--</option>
+	  <option value="sunny">晴天</option>
+	  <option value="rainy">雨天</option>
+	  <option value="snowing">雪天</option>
+	  <option value="overcast">阴天</option>
+	</select>
+	
+	<p id="abc"></p>
+</body>
+<script stype="text/javascript">
+
+    var renderHTML = (content) => {
+		var p = document.querySelector("#abc");
+		p.textContent = content;
+	}
+
+    var operation = () => {
+	    var select = document.querySelector('#weather');
+	    console.log(select.value);
+	    console.log("我选择的是：", select.value);
+        if (select.value == 'sunny') {
+            renderHTML('阳光明媚，刚好睡觉');
+        } else if (select.value == "rainy"){
+            renderHTML("下雨了，只好睡觉了");
+        } else if (select.value ==="snowing"){
+            renderHTML("下雪了，只能睡觉了");
+        } else if (select.value === "overcast"){
+            renderHTML("阴天，适合睡觉");
+        } else {
+            console.log("");
+        }
+    }
+    var select = document.querySelector('#weather');
+    console.log(select.value);
+	select.addEventListener("change", operation);
+	
+</script>
+</html>
