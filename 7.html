@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>简单计算器</title>
+    <style>
+        /* 样式定义 */
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .calculator {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .display {
+            width: 100%;
+            height: 40px;
+            text-align: right;
+            margin-bottom: 10px;
+            padding: 5px;
+            font-size: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #eaeaea;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .button {
+            width: 100%;
+            height: 50px;
+            font-size: 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #f0f0f0;
+            cursor: pointer;
+        }
+        .button.operation {
+            background-color: #f9a825;
+            color: white;
+        }
+        .button.equal {
+            background-color: #29b6f6;
+            color: white;
+            grid-column: span 4;
+        }
+        .button.clear {
+            background-color: #ef5350;
+            color: white;
+            grid-column: span 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <!-- 显示屏 -->
+        <input type="text" id="display" class="display" disabled>
+        <div class="buttons">
+            <!-- 按钮 -->
+            <button class="button" onclick="appendNumber('1')">1</button>
+            <button class="button" onclick="appendNumber('2')">2</button>
+            <button class="button" onclick="appendNumber('3')">3</button>
+            <button class="button operation" onclick="chooseOperation('+')">+</button>
+
+            <button class="button" onclick="appendNumber('4')">4</button>
+            <button class="button" onclick="appendNumber('5')">5</button>
+            <button class="button" onclick="appendNumber('6')">6</button>
+            <button class="button operation" onclick="chooseOperation('-')">-</button>
+
+            <button class="button" onclick="appendNumber('7')">7</button>
+            <button class="button" onclick="appendNumber('8')">8</button>
+            <button class="button" onclick="appendNumber('9')">9</button>
+            <button class="button operation" onclick="chooseOperation('*')">*</button>
+
+            <button class="button" onclick="appendNumber('0')">0</button>
+            <button class="button clear" onclick="clearDisplay()">C</button>
+            <button class="button operation" onclick="chooseOperation('/')">/</button>
+            <button class="button equal" onclick="compute()">=</button>
+           
+        </div>
+    </div>
+
+    <script>
+        // 全局变量用于存储操作数和运算符
+        let currentOperand = '';
+        let previousOperand = '';
+        let operation = undefined;
+
+        // 获取显示屏元素
+        const display = document.getElementById('display');
+
+        // 添加数字到当前操作数
+        function appendNumber(number) {
+            if (number === '0' && currentOperand === '0') return;
+            currentOperand = currentOperand.toString() + number.toString();
+            updateDisplay();
+        }
+
+        // 选择运算符
+        function chooseOperation(op) {
+            if (currentOperand === '') return;
+            if (previousOperand !== '') {
+                compute();
+            }
+            operation = op;
+            previousOperand = currentOperand;
+            currentOperand = '';
+        }
+
+        // 执行计算
+        function compute() {
+            let computation;
+            const prev = parseFloat(previousOperand);
+            const current = parseFloat(currentOperand);
+            if (isNaN(prev) || isNaN(current)) return;
+            switch (operation) {
+                case '+':
+                    computation = prev + current;
+                    break;
+                case '-':
+                    computation = prev - current;
+                    break;
+                case '*':
+                    computation = prev * current;
+                    break;
+                case '/':
+                    computation = prev / current;
+                    break;
+                default:
+                    return;
+            }
+            currentOperand = computation;
+            operation = undefined;
+            previousOperand = '';
+            updateDisplay();
+        }
+
+        // 清除显示屏
+        function clearDisplay() {
+            currentOperand = '';
+            previousOperand = '';
+            operation = undefined;
+            updateDisplay();
+        }
+
+        // 更新显示屏
+        function updateDisplay() {
+            display.value = currentOperand;
+        }
+    </script>
+</body>
+</html>
