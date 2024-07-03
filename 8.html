@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>点击小方块游戏</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: Arial, sans-serif;
+        }
+        #gameArea {
+            width: 600px;
+            height: 600px;
+            position: relative;
+            border: 2px solid #333;
+            background-color: white;
+            display: none; /* 初始隐藏游戏区域 */
+        }
+        .square {
+            width: 50px;
+            height: 50px;
+            background-color: red;
+            position: absolute;
+            cursor: pointer;
+        }
+        #scoreBoard, #timer {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        select {
+            margin-top: 20px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <!-- 游戏区域 -->
+        <div id="gameArea"></div>
+        <!-- 得分板 -->
+        <div id="scoreBoard">得分: <span id="score">0</span></div>
+        <!-- 计时器 -->
+        <div id="timer">剩余时间: <span id="time">30</span> 秒</div>
+        <!-- 选择时间 -->
+        <select id="timeSelect">
+            <option value="15">15秒</option>
+            <option value="30" selected>30秒</option>
+            <option value="60">60秒</option>
+        </select>
+        <!-- 开始按钮 -->
+        <button id="startButton">开始游戏</button>
+        <!-- 结束按钮，初始隐藏 -->
+        <button id="endButton" style="display: none;">结束游戏</button>
+    </div>
+
+    <script>
+        let gameArea = document.getElementById('gameArea');
+        let scoreBoard = document.getElementById('score');
+        let timerDisplay = document.getElementById('time');
+        let startButton = document.getElementById('startButton');
+        let endButton = document.getElementById('endButton');
+        let timeSelect = document.getElementById('timeSelect');
+        let score = 0;
+        let gameActive = false;
+        let timeLeft;
+        let timer;
+
+        // 创建并显示一个随机位置的小方块
+        function createSquare() {
+            if (!gameActive) return; // 如果游戏不活跃，不创建方块
+            let square = document.createElement('div');
+            square.className = 'square';
+            // 随机位置
+            square.style.top = Math.random() * (gameArea.clientHeight - 50) + 'px';
+            square.style.left = Math.random() * (gameArea.clientWidth - 50) + 'px';
+            // 方块点击事件
+            square.addEventListener('click', function() {
+                score++; // 增加得分
+                scoreBoard.textContent = score; // 更新得分板
+                gameArea.removeChild(square); // 移除当前方块
+                createSquare(); // 创建新方块
+            });
+            gameArea.appendChild(square);
+        }
+
+        // 开始游戏函数
+        function startGame() {
+            score = 0; // 重置得分
+            timeLeft = parseInt(timeSelect.value); // 获取选择的时间
+            scoreBoard.textContent = score; // 更新得分板
+            timerDisplay.textContent = timeLeft; // 更新计时器显示
+            gameActive = true; // 设置游戏状态为活跃
+            gameArea.style.display = 'block'; // 显示游戏区域
+            startButton.style.display = 'none'; // 隐藏开始按钮
+            endButton.style.display = 'inline-block'; // 显示结束按钮
+            createSquare(); // 创建第一个方块
+            // 设置倒计时
+            timer = setInterval(function() {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+                if (timeLeft <= 0) {
+                    endGame(); // 时间到，结束游戏
+                }
+            }, 1000);
+        }
+
+        // 结束游戏函数
+        function endGame() {
+            gameActive = false; // 设置游戏状态为不活跃
+            clearInterval(timer); // 清除计时器
+            alert('时间到！你的最终得分是: ' + score); // 显示最终得分
+            while (gameArea.firstChild) {
+                gameArea.removeChild(gameArea.firstChild); // 移除所有方块
+            }
+            gameArea.style.display = 'none'; // 隐藏游戏区域
+            startButton.style.display = 'inline-block'; // 显示开始按钮
+            endButton.style.display = 'none'; // 隐藏结束按钮
+        }
+
+        // 动态更新计时器显示
+        timeSelect.addEventListener('change', function() {
+            if (!gameActive) {
+                timerDisplay.textContent = timeSelect.value;
+            }
+        });
+
+        // 绑定开始按钮事件
+        startButton.addEventListener('click', startGame);
+        // 绑定结束按钮事件
+        endButton.addEventListener('click', endGame);
+    </script>
+</body>
+</html>
